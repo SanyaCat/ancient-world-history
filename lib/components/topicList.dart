@@ -75,42 +75,44 @@ class _TopicListState extends State<TopicList> {
   @override
   build(context) {
     var topicList = Expanded(
-        child: ListView.builder(
-            itemCount: topics.length,
-            itemBuilder: (context, i) {
-              return Card(
-                elevation: 2.0,
-                margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Container(
-                  decoration:
-                      BoxDecoration(color: Theme.of(context).primaryColorLight),
-                  child: ListTile(
-                    title: Text("${topics[i].title} - ${topics[i].author}",
-                        style: TextStyle(
-                          color: Theme.of(context).textTheme.headline6.color,
-                          fontWeight: FontWeight.bold,
-                        )),
-                    leading: Container(
-                      padding: EdgeInsets.only(right: 12),
-                      child: Icon(Icons.description,
-                          color: Theme.of(context).textTheme.headline6.color),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                  width: 1,
-                                  color: Theme.of(context)
-                                      .textTheme
-                                      .headline6
-                                      .color))),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    trailing: Icon(Icons.arrow_right,
-                        color: Theme.of(context).textTheme.headline6.color),
-                    subtitle: Text(topics[i].description, maxLines: 3),
-                  ),
+      child: ListView.builder(
+        itemCount: topics.length,
+        itemBuilder: (context, i) {
+          return Card(
+            elevation: 2.0,
+            margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Container(
+              decoration:
+                  BoxDecoration(color: Theme.of(context).primaryColorLight),
+              child: ListTile(
+                title: Text("${topics[i].title} - ${topics[i].author}",
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.headline6.color,
+                      fontWeight: FontWeight.bold,
+                    )),
+                leading: Container(
+                  padding: EdgeInsets.only(right: 12),
+                  child: Icon(Icons.description,
+                      color: Theme.of(context).textTheme.headline6.color),
+                  decoration: BoxDecoration(
+                      border: Border(
+                          right: BorderSide(
+                              width: 1,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .color))),
                 ),
-              );
-            }));
+                contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                trailing: Icon(Icons.arrow_right,
+                    color: Theme.of(context).textTheme.headline6.color),
+                subtitle: Text(topics[i].description, maxLines: 3),
+              ),
+            ),
+          );
+        },
+      ),
+    );
 
     var filterInfo = Container(
         margin: EdgeInsets.only(top: 3, left: 7, right: 7, bottom: 5),
@@ -118,7 +120,7 @@ class _TopicListState extends State<TopicList> {
             color:
                 Theme.of(context).textTheme.headline6.color.withOpacity(0.5)),
         height: 40,
-        child: RaisedButton(
+        child: ElevatedButton(
           child: Row(
             children: [
               Icon(Icons.filter_list),
@@ -156,35 +158,42 @@ class _TopicListState extends State<TopicList> {
               Row(
                 children: [
                   Expanded(
-                      flex: 1,
-                      child: RaisedButton(
-                        onPressed: () {
-                          filter();
-                        },
-                        child: Text(
-                          'Apply',
-                          style: TextStyle(
-                              color:
-                                  Theme.of(context).textTheme.headline6.color),
+                    flex: 1,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        filter();
+                      },
+                      child: Text(
+                        'Apply',
+                        style: TextStyle(
+                          color: Theme.of(context).textTheme.headline6.color,
                         ),
-                        color: Theme.of(context).primaryColor,
-                      )),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
                   SizedBox(width: 10),
                   Expanded(
-                      flex: 1,
-                      child: RaisedButton(
-                        onPressed: () {
-                          clearFilter();
-                        },
-                        child: Text(
-                          'Clear',
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
+                    flex: 1,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        clearFilter();
+                      },
+                      child: Text(
+                        'Clear',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
                         ),
-                        color: Theme.of(context).textTheme.headline6.color,
-                      )),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).textTheme.headline6.color,
+                      ),
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),

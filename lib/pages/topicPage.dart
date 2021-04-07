@@ -17,41 +17,41 @@ class _TopicPageState extends State<TopicPage> {
 
   @override
   build(context) {
-    return Container(
-      child: Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        appBar: AppBar(
-            title: Text(sectionIndex == 0 ? 'Тема' : 'Теория'),
-            leading: Icon(Icons.article_outlined),
-            actions: <Widget>[
-              // log out button
-              FlatButton.icon(
-                  onPressed: () { AuthService().logOut(); },
-                  icon: Icon(
-                    Icons.logout,
-                    color: Theme.of(context).textTheme.headline6.color,
-                  ),
-                  label: SizedBox.shrink()
-              )
-            ],
-        ),
-        body: sectionIndex == 0 ? TopicCurrent() : TopicList(),
-        bottomNavigationBar: CurvedNavigationBar(
-          items: [
-            Icon(Icons.article_outlined),
-            Icon(Icons.search),
-          ],
-          index: sectionIndex,
-          height: 50,
-          backgroundColor: Theme.of(context).primaryColorLight.withOpacity(0.5),
-          buttonBackgroundColor: Theme.of(context).primaryColorLight,
-          color: Theme.of(context).textTheme.headline6.color,
-          animationCurve: Curves.elasticInOut,
-          animationDuration: Duration(milliseconds: 500),
-          onTap: (int index) {
-              setState(() => sectionIndex = index);
-          },
-        ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        title: Text(sectionIndex == 0 ? 'Тема' : 'Теория'),
+        leading: Icon(Icons.article_outlined),
+        actions: <Widget>[
+          // log out button
+          TextButton.icon(
+            onPressed: () {
+              AuthService().logOut();
+            },
+            icon: Icon(
+              Icons.logout,
+              color: Theme.of(context).textTheme.headline6.color,
+            ),
+            label: SizedBox.shrink(),
+          )
+        ],
+      ),
+      body: sectionIndex == 0 ? TopicCurrent() : TopicList(),
+      bottomNavigationBar: CurvedNavigationBar(
+        items: [
+          Icon(Icons.article_outlined),
+          Icon(Icons.search),
+        ],
+        index: sectionIndex,
+        height: 50,
+        backgroundColor: Theme.of(context).primaryColorLight.withOpacity(0.5),
+        buttonBackgroundColor: Theme.of(context).primaryColorLight,
+        color: Theme.of(context).textTheme.headline6.color,
+        animationCurve: Curves.elasticInOut,
+        animationDuration: Duration(milliseconds: 500),
+        onTap: (int index) {
+          setState(() => sectionIndex = index);
+        },
       ),
     );
   }

@@ -14,7 +14,7 @@ main() async {
 
 class AWHApp extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-  
+
   @override
   build(context) {
     return FutureBuilder(
@@ -29,18 +29,18 @@ class AWHApp extends StatelessWidget {
         return StreamProvider<AWHUser>.value(
           value: AuthService().currentUser,
           child: MaterialApp(
-              title: 'История Древнего мира',
-              home: LandingPage(), //AuthPage(), //TopicPage(),
-              theme: ThemeData(
-                  primaryColor: Colors.amber,
-                  primaryColorLight: Colors.amberAccent,
-                  primaryColorDark: Color.fromARGB(100, 255, 200, 0),
-                  textTheme: TextTheme(
-                    headline6: TextStyle(color: Colors.black54),
-                    caption: TextStyle(color: Colors.black38),
-                  )
-              )
-          )
+            title: 'История Древнего мира',
+            home: LandingPage(),
+            theme: ThemeData(
+              primaryColor: Colors.amber,
+              primaryColorLight: Colors.amberAccent,
+              primaryColorDark: Color.fromARGB(100, 255, 200, 0),
+              textTheme: TextTheme(
+                headline6: TextStyle(color: Colors.black54),
+                caption: TextStyle(color: Colors.black38),
+              ),
+            ),
+          ),
         );
       },
     );
