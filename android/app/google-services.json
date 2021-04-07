@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "116809530751",
+    "project_id": "ancient-world-history",
+    "storage_bucket": "ancient-world-history.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116809530751:android:a71c0fb8dde42cdc30ee4a",
+        "android_client_info": {
+          "package_name": "by.radiant_ronin.ancient_world_history"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "116809530751-akvie30h9e3nhol6vvb1pkcletkog47g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWC0ALBhsltc7Ft-EzU2DJlb_c2TltKpc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "116809530751-akvie30h9e3nhol6vvb1pkcletkog47g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
