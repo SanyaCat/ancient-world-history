@@ -1,12 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class TopicCurrent extends StatelessWidget {
+class QuizList extends StatelessWidget {
   @override
   build(context) {
     return Container(
       child: Scaffold(
-        body: Text("ToDo"),
+        body: Text("Quiz List"),
       ),
     );
   }

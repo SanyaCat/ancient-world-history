@@ -1,3 +1,4 @@
+import 'package:ancient_world_history/domain/routes.dart';
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/pages/landingPage.dart';
 import 'package:ancient_world_history/services/auth.dart';
@@ -30,7 +31,6 @@ class AWHApp extends StatelessWidget {
           value: AuthService().currentUser,
           child: MaterialApp(
             title: 'История Древнего мира',
-            home: LandingPage(),
             theme: ThemeData(
               primaryColor: Colors.amber,
               primaryColorLight: Colors.amberAccent,
@@ -39,7 +39,10 @@ class AWHApp extends StatelessWidget {
                 headline6: TextStyle(color: Colors.black54),
                 caption: TextStyle(color: Colors.black38),
               ),
+              accentColor: Colors.black54,
             ),
+            initialRoute: LandingPage.routeName,
+            routes: allRoutes,
           ),
         );
       },

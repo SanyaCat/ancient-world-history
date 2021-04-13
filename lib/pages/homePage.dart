@@ -1,18 +1,21 @@
-import 'package:ancient_world_history/components/topicCurrent.dart';
-import 'package:ancient_world_history/components/topicList.dart';
+import 'package:ancient_world_history/pages/topic/topicAdd.dart';
+import 'package:ancient_world_history/pages/topic/topicList.dart';
+import 'package:ancient_world_history/pages/quiz/quizList.dart';
 import 'package:ancient_world_history/services/auth.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 // topic page
-class TopicPage extends StatefulWidget {
-  TopicPage({Key key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({Key key}) : super(key: key);
+
+  static const routeName = '/';
 
   @override
-  _TopicPageState createState() => _TopicPageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _TopicPageState extends State<TopicPage> {
+class _HomePageState extends State<HomePage> {
   int sectionIndex = 0;
 
   @override
@@ -20,7 +23,7 @@ class _TopicPageState extends State<TopicPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: Text(sectionIndex == 0 ? 'Тема' : 'Теория'),
+        title: Text(sectionIndex == 0 ? 'Теория' : 'Тесты'),
         leading: Icon(Icons.article_outlined),
         actions: <Widget>[
           // log out button
@@ -36,11 +39,11 @@ class _TopicPageState extends State<TopicPage> {
           )
         ],
       ),
-      body: sectionIndex == 0 ? TopicCurrent() : TopicList(),
+      body: sectionIndex == 0 ? TopicList() : QuizList(),
       bottomNavigationBar: CurvedNavigationBar(
         items: [
           Icon(Icons.article_outlined),
-          Icon(Icons.search),
+          Icon(Icons.edit),
         ],
         index: sectionIndex,
         height: 50,
@@ -52,6 +55,17 @@ class _TopicPageState extends State<TopicPage> {
         onTap: (int index) {
           setState(() => sectionIndex = index);
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (sectionIndex == 0) {
+            Navigator.pushNamed(context, TopicAdd.routeName);
+          }
+        },
+        child: Icon(Icons.add),
+        //backgroundColor: Theme.of(context).textTheme.headline6.color,
+        foregroundColor: Theme.of(context).primaryColor,
+        tooltip: sectionIndex == 0 ? 'Добавить тему' : 'Добавить тест',
       ),
     );
   }

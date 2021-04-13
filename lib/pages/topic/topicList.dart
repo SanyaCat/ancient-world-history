@@ -93,15 +93,15 @@ class _TopicListState extends State<TopicList> {
                 leading: Container(
                   padding: EdgeInsets.only(right: 12),
                   child: Icon(Icons.description,
-                      color: Theme.of(context).textTheme.headline6.color),
+                      color: Theme.of(context).accentColor),
                   decoration: BoxDecoration(
-                      border: Border(
-                          right: BorderSide(
-                              width: 1,
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  .color))),
+                    border: Border(
+                      right: BorderSide(
+                        width: 1,
+                        color: Theme.of(context).accentColor,
+                      ),
+                    ),
+                  ),
                 ),
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 trailing: Icon(Icons.arrow_right,
@@ -123,10 +123,16 @@ class _TopicListState extends State<TopicList> {
         child: ElevatedButton(
           child: Row(
             children: [
-              Icon(Icons.filter_list),
+              Icon(
+                Icons.filter_list,
+                color: Theme.of(context).primaryColor,
+              ),
               Text(
                 filterText,
-                style: TextStyle(),
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontStyle: FontStyle.italic,
+                ),
                 overflow: TextOverflow.ellipsis,
               )
             ],
@@ -136,6 +142,9 @@ class _TopicListState extends State<TopicList> {
               filterHeight = (filterHeight == 0.0 ? 280 : 0.0);
             });
           },
+          style: ElevatedButton.styleFrom(
+            primary: Theme.of(context).textTheme.headline6.color.withAlpha(50),
+          ),
         ));
 
     var filterForm = AnimatedContainer(
