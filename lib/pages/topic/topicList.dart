@@ -1,3 +1,5 @@
+import 'package:ancient_world_history/pages/topic/topicCurrent.dart';
+import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ancient_world_history/domain/topic.dart';
 
@@ -11,31 +13,11 @@ class _TopicListState extends State<TopicList> {
   @override
   void initState() {
     clearFilter();
+    //loadData();
     super.initState();
   }
 
-  final topics = <Topic>[
-    Topic(
-        title: '2,5 млн лет назад',
-        author: 'Александр',
-        description: 'Появление представителей первого человека'),
-    Topic(
-        title: '1,6 млн лет назад',
-        author: 'Александр',
-        description: 'Появление человека прямоходщего'),
-    Topic(
-        title: '250 тыс. лет назад',
-        author: 'Наталья',
-        description: 'Появление неандертальцев'),
-    Topic(
-        title: '40 тыс. лет назад',
-        author: 'Александр',
-        description: 'Появление Кроманьонцев в Европе'),
-    Topic(
-        title: 'Около 2600 года до н.э.',
-        author: 'Наталья',
-        description: 'Постройка пирамиды Хеопса в Египте'),
-  ];
+  var topics = List<Topic>.empty();
 
   var filterTitle = '';
   var filterTitleController = TextEditingController();
@@ -43,6 +25,25 @@ class _TopicListState extends State<TopicList> {
   var filterAuthorController = TextEditingController();
   var filterText = '';
   var filterHeight = 0.0;
+  FireStoreService db = FireStoreService();
+
+  loadData() async {
+    filterTitle = filterTitleController.text;
+    filterAuthor = filterAuthorController.text;
+
+    var stream = db.getTopics(
+      topic: Topic(
+          title: filterTitle.isNotEmpty ? filterTitle : null,
+          author: filterAuthor.isNotEmpty ? filterAuthor : null,
+      )
+    );
+
+    stream.listen((List<Topic> data) {
+      setState(() {
+        topics = data;
+      });
+    });
+  }
 
   List<Topic> filter() {
     setState(() {
@@ -107,6 +108,13 @@ class _TopicListState extends State<TopicList> {
                 trailing: Icon(Icons.arrow_right,
                     color: Theme.of(context).textTheme.headline6.color),
                 subtitle: Text(topics[i].description, maxLines: 3),
+                onTap: () {
+                  Navigator.pushNamed(
+                      context,
+                      TopicCurrent.routeName,
+                      arguments: topics[i],
+                  );
+                },
               ),
             ),
           );
@@ -211,6 +219,8 @@ class _TopicListState extends State<TopicList> {
       curve: Curves.fastOutSlowIn,
       height: filterHeight,
     );
+
+    loadData();
 
     return Column(
       children: <Widget>[

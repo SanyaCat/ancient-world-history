@@ -21,7 +21,6 @@ class _HomePageState extends State<HomePage> {
   @override
   build(context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: Text(sectionIndex == 0 ? 'Теория' : 'Тесты'),
         leading: Icon(Icons.article_outlined),
@@ -39,6 +38,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
+      backgroundColor: Theme.of(context).primaryColor,
       body: sectionIndex == 0 ? TopicList() : QuizList(),
       bottomNavigationBar: CurvedNavigationBar(
         items: [

@@ -4,6 +4,7 @@ import 'package:ancient_world_history/pages/landingPage.dart';
 import 'package:ancient_world_history/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,10 @@ class AWHApp extends StatelessWidget {
 
   @override
   build(context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return FutureBuilder(
       future: _initialization,
       builder: (context, snapshot) {
@@ -29,6 +34,7 @@ class AWHApp extends StatelessWidget {
         // shows application
         return StreamProvider<AWHUser>.value(
           value: AuthService().currentUser,
+          initialData: null,
           child: MaterialApp(
             title: 'История Древнего мира',
             theme: ThemeData(
