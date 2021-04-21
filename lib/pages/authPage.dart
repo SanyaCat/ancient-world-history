@@ -14,9 +14,13 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _passwordCheckController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
 
   String _email;
   String _password;
+  String _name;
+  bool _admin = false;
   bool showLogin = true;
 
   AuthService _authService = AuthService();
@@ -27,12 +31,12 @@ class _AuthPageState extends State<AuthPage> {
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(
         children: [
-          _logo(),
           showLogin
               // login
               ? Column(
                   children: [
-                    _form('Войти', _loginUser),
+                    _logo(),
+                    _loginForm(),
                     Padding(
                       padding: EdgeInsets.all(10),
                       child: GestureDetector(
@@ -56,7 +60,7 @@ class _AuthPageState extends State<AuthPage> {
               // registration
               : Column(
                   children: [
-                    _form('Регистрация', _registerUser),
+                    _registerForm(),
                     Padding(
                       padding: EdgeInsets.all(10),
                       child: GestureDetector(
@@ -82,7 +86,7 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  Widget _form(String label, void func()) {
+  Widget _loginForm() {
     return Container(
       child: Column(
         children: [
@@ -102,7 +106,46 @@ class _AuthPageState extends State<AuthPage> {
             child: Container(
               height: 50,
               width: MediaQuery.of(context).size.width,
-              child: _button(label, func),
+              child: _button('Войти', _loginUser),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _registerForm() {
+    return Container(
+      child: Column(
+        children: [
+          SizedBox(height: 20),
+          Padding(
+            padding: EdgeInsets.only(bottom: 20, top: 30),
+            child:
+                _inputBox(Icon(Icons.email), 'Почта', _emailController, false),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: _inputBox(
+                Icon(Icons.lock), 'Пароль', _passwordController, true),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: _inputBox(
+                Icon(Icons.lock), 'Подтвердите пароль', _passwordCheckController, true),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: _inputBox(
+                Icon(Icons.lock), 'Имя', _nameController, true),
+          ),
+          SizedBox(height: 20),
+          Padding(
+            padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+            child: Container(
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              child: _button('Регистрация', _registerUser),
             ),
           )
         ],
@@ -206,17 +249,19 @@ class _AuthPageState extends State<AuthPage> {
   void _registerUser() async {
     _email = _emailController.text;
     _password = _passwordController.text;
+    _name = _nameController.text;
 
-    if (_email.isEmpty || _password.isEmpty) return;
+    if (_email.isEmpty || _password.isEmpty || _name.isEmpty) return;
 
     AWHUser user = await _authService.registerWithEmailAndPassword(
-        _email.trim(), _password.trim());
+        _email.trim(), _password.trim(), _name.trim(), _admin);
     if (user == null) {
       Fluttertoast.showToast(
           msg: "Ошибка. Не получилось зарегистрировать пользователя!");
     } else {
       _emailController.clear();
       _passwordController.clear();
+      _nameController.clear();
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/pages/topic/topicCurrent.dart';
 import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class _TopicListState extends State<TopicList> {
   }
 
   var topics = List<Topic>.empty();
+  var users = List<AWHUser>.empty();
 
   var filterTitle = '';
   var filterTitleController = TextEditingController();
@@ -37,12 +39,22 @@ class _TopicListState extends State<TopicList> {
           author: filterAuthor.isNotEmpty ? filterAuthor : null,
       )
     );
-
     stream.listen((List<Topic> data) {
       setState(() {
         topics = data;
       });
     });
+
+    var streamUsers = db.getUsers();
+    streamUsers.listen((List<AWHUser> data) {
+      setState(() {
+        users = data;
+      });
+    });
+  }
+
+  AWHUser findUserById(String id) {
+    return users.firstWhere((element) => element.id == id);
   }
 
   List<Topic> filter() {
@@ -86,7 +98,7 @@ class _TopicListState extends State<TopicList> {
               decoration:
                   BoxDecoration(color: Theme.of(context).primaryColorLight),
               child: ListTile(
-                title: Text("${topics[i].title} - ${topics[i].author}",
+                title: Text("${topics[i].title} - ${findUserById(topics[i].author).name}",
                     style: TextStyle(
                       color: Theme.of(context).textTheme.headline6.color,
                       fontWeight: FontWeight.bold,
