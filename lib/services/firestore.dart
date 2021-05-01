@@ -1,6 +1,7 @@
 import 'package:ancient_world_history/domain/topic.dart';
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class FireStoreService {
   final CollectionReference _userCollection =
@@ -8,12 +9,24 @@ class FireStoreService {
   final CollectionReference _topicCollection =
       FirebaseFirestore.instance.collection('topics');
 
-  Future editUser(AWHUser user) async {
-    return await _userCollection.doc(user.id).set(user.toMap());
+  Future editUser(AWHUser user, context) async {
+    ProgressDialog progress = ProgressDialog(context);
+    progress.style(message: 'Сохранение...');
+    await progress.show();
+    return await _userCollection
+        .doc(user.id)
+        .set(user.toMap())
+        .whenComplete(() => progress.hide());
   }
 
-  Future editTopic(Topic topic) async {
-    return await _topicCollection.doc(topic.id).set(topic.toMap());
+  Future editTopic(Topic topic, context) async {
+    ProgressDialog progress = ProgressDialog(context);
+    progress.style(message: 'Сохранение...');
+    await progress.show();
+    return await _topicCollection
+        .doc(topic.id)
+        .set(topic.toMap())
+        .whenComplete(() => progress.hide());
   }
 
   // Stream<AWHUser> getUser(String id) {

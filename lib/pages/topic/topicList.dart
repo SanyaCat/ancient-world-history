@@ -5,6 +5,7 @@ import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ancient_world_history/domain/topic.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 // list of topics
 class TopicList extends StatefulWidget {
@@ -41,6 +42,7 @@ class _TopicListState extends State<TopicList> {
           author: filterAuthor.isNotEmpty ? filterAuthor : null,
       )
     );
+
     stream.listen((List<Topic> data) {
       setState(() {
         topics = data;

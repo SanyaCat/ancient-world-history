@@ -10,11 +10,17 @@ import 'package:provider/provider.dart';
 // initializes app
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // TODO('loading')
+  await Firebase.initializeApp();
   runApp(AWHApp());
 }
 
 class AWHApp extends StatelessWidget {
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  //final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+  // Future<FirebaseApp> init() async {
+  //   return await Firebase.initializeApp();
+  // }
 
   @override
   build(context) {
@@ -22,8 +28,9 @@ class AWHApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
     return FutureBuilder(
-      future: _initialization,
+      // future: init(),
       builder: (context, snapshot) {
         // check for errors
         if (snapshot.hasError) {

@@ -4,6 +4,7 @@ import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 
 class TopicAdd extends StatefulWidget {
@@ -21,6 +22,9 @@ class _TopicAddState extends State<TopicAdd> {
 
   @override
   build(context) {
+    ProgressDialog progress = ProgressDialog(context);
+    progress.style(message: 'Loading...');
+
     return Scaffold(
       appBar: AppBar(
         title: typing
@@ -52,14 +56,19 @@ class _TopicAddState extends State<TopicAdd> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-              Topic topic = Topic(
-                  title: _titleController.text,
-                  author: Provider.of<AWHUser>(context, listen: false).id,
-                  description: await htmlController.getText());
-              await FireStoreService().editTopic(topic);
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text('Тема добавлена!')));
-              Navigator.pop(context);
+              if (_titleController.text != 'Введите название') {
+                Topic topic = Topic(
+                    title: _titleController.text,
+                    author: Provider.of<AWHUser>(context, listen: false).id,
+                    description: await htmlController.getText());
+                await FireStoreService().editTopic(topic, context);
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text('Тема добавлена!')));
+                Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text('Введите название!')));
+              }
             },
           ),
         ],
@@ -70,11 +79,11 @@ class _TopicAddState extends State<TopicAdd> {
           controller: htmlController,
           htmlEditorOptions: HtmlEditorOptions(
             hint: 'Введите текст...',
+            initialText: '',
           ),
           htmlToolbarOptions: HtmlToolbarOptions(
             defaultToolbarButtons: [
               FontButtons(),
-              InsertButtons(),
               ListButtons(listStyles: false),
             ],
             toolbarPosition: ToolbarPosition.belowEditor,
