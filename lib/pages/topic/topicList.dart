@@ -1,8 +1,10 @@
+import 'package:ancient_world_history/domain/routes.dart';
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/pages/topic/topicCurrent.dart';
 import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ancient_world_history/domain/topic.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 // list of topics
 class TopicList extends StatefulWidget {
@@ -119,12 +121,21 @@ class _TopicListState extends State<TopicList> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 trailing: Icon(Icons.arrow_right,
                     color: Theme.of(context).textTheme.headline6.color),
-                subtitle: Text(topics[i].description, maxLines: 3),
+                // TODO("Date")
+                //subtitle: Container(
+                //   constraints: BoxConstraints(
+                //     maxHeight: 40.0,
+                //   ),
+                //   child: Html(
+                //     data: topics[i].description,
+                //   ),
+                //  child: Text(topics[i].description, maxLines: 3),
+                //),
                 onTap: () {
                   Navigator.pushNamed(
                       context,
                       TopicCurrent.routeName,
-                      arguments: topics[i],
+                      arguments: RouteArguments(topics[i], findUserById(topics[i].author)),
                   );
                 },
               ),

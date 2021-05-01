@@ -3,7 +3,7 @@ import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:html_editor/html_editor.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:provider/provider.dart';
 
 class TopicAdd extends StatefulWidget {
@@ -14,77 +14,75 @@ class TopicAdd extends StatefulWidget {
 }
 
 class _TopicAddState extends State<TopicAdd> {
-  final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  var err = false;
+  final _titleController = TextEditingController(text: 'Введите название');
+  final htmlController = HtmlEditorController();
 
-  GlobalKey<HtmlEditorState> keyEditor = GlobalKey();
+  bool typing = false;
 
   @override
   build(context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Добавление темы'),
+        title: typing
+            ? TextField(
+                autofocus: true,
+                controller: _titleController,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            : Text(_titleController.text),
+        leading: IconButton(
+          icon: Icon(typing ? Icons.done : Icons.edit),
+          onPressed: () {
+            setState(() {
+              if (!typing || _titleController.text == 'Введите название') {
+                _titleController.text = '';
+                typing = !typing;
+              } else if (typing && _titleController.text.isNotEmpty)
+                typing = !typing;
+              else
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text('Введите название!')));
+            });
+          },
+        ),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () async {
-              if (_formKey.currentState.validate()) {
-                Topic topic = Topic(
+              Topic topic = Topic(
                   title: _titleController.text,
                   author: Provider.of<AWHUser>(context, listen: false).id,
-                  description: await keyEditor.currentState.getText()
-                );
-                await FireStoreService().editTopic(topic);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Тема добавлена!')));
-                // await keyEditor.currentState.getText()
-                Navigator.pop(context);
-              }
+                  description: await htmlController.getText());
+              await FireStoreService().editTopic(topic);
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text('Тема добавлена!')));
+              Navigator.pop(context);
             },
           ),
         ],
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Container(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextFormField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Название',
-                    labelStyle: TextStyle(
-                      color: Theme.of(context).accentColor,
-                    ),
-                  ),
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      err = true;
-                      return 'Введите название';
-                    } else {
-                      err = false;
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              HtmlEditor(
-                hint: 'Введите текст...',
-                key: keyEditor,
-                height: MediaQuery.of(context).size.height -
-                    (err ? 198.5 : 178) -
-                    MediaQuery.of(context).viewInsets.bottom,
-              ),
-            ],
+        child: HtmlEditor(
+          controller: htmlController,
+          htmlEditorOptions: HtmlEditorOptions(
+            hint: 'Введите текст...',
           ),
+          htmlToolbarOptions: HtmlToolbarOptions(
+            defaultToolbarButtons: [
+              FontButtons(),
+              InsertButtons(),
+              ListButtons(listStyles: false),
+            ],
+            toolbarPosition: ToolbarPosition.belowEditor,
+            toolbarType: ToolbarType.nativeGrid,
+          ),
+          otherOptions: OtherOptions(
+              height: MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).viewInsets.top),
         ),
       ),
     );

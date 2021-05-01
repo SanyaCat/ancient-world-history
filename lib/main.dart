@@ -5,7 +5,6 @@ import 'package:ancient_world_history/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 // initializes app
@@ -28,7 +27,7 @@ class AWHApp extends StatelessWidget {
       builder: (context, snapshot) {
         // check for errors
         if (snapshot.hasError) {
-          Fluttertoast.showToast(msg: "Ошибка!!!");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Ошибка!!!")));
         }
 
         // shows application

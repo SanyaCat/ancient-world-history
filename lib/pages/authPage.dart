@@ -1,7 +1,6 @@
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 // user authentication
 class AuthPage extends StatefulWidget {
@@ -131,13 +130,12 @@ class _AuthPageState extends State<AuthPage> {
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 20),
-            child: _inputBox(
-                Icon(Icons.lock), 'Подтвердите пароль', _passwordCheckController, true),
+            child: _inputBox(Icon(Icons.lock), 'Подтвердите пароль',
+                _passwordCheckController, true),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 20),
-            child: _inputBox(
-                Icon(Icons.lock), 'Имя', _nameController, true),
+            child: _inputBox(Icon(Icons.lock), 'Имя', _nameController, true),
           ),
           SizedBox(height: 20),
           Padding(
@@ -236,10 +234,9 @@ class _AuthPageState extends State<AuthPage> {
     AWHUser user = await _authService.signInWithEmailAndPassword(
         _email.trim(), _password.trim());
     if (user == null) {
-      Fluttertoast.showToast(
-          msg: "Ошибка. Пользователя с такой электронной почтой не существует!",
-          fontSize: 16,
-          gravity: ToastGravity.CENTER);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              "Ошибка. Пользователя с такой электронной почтой не существует!")));
     } else {
       _emailController.clear();
       _passwordController.clear();
@@ -256,8 +253,9 @@ class _AuthPageState extends State<AuthPage> {
     AWHUser user = await _authService.registerWithEmailAndPassword(
         _email.trim(), _password.trim(), _name.trim(), _admin);
     if (user == null) {
-      Fluttertoast.showToast(
-          msg: "Ошибка. Не получилось зарегистрировать пользователя!");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text("Ошибка. Не получилось зарегистрировать пользователя!")));
     } else {
       _emailController.clear();
       _passwordController.clear();
