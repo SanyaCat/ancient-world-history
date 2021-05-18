@@ -1,11 +1,8 @@
-import 'package:ancient_world_history/domain/routes.dart';
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/pages/topic/topicCurrent.dart';
 import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ancient_world_history/domain/topic.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:progress_dialog/progress_dialog.dart';
 
 // list of topics
 class TopicList extends StatefulWidget {
@@ -17,7 +14,6 @@ class _TopicListState extends State<TopicList> {
   @override
   void initState() {
     clearFilter();
-    //loadData();
     super.initState();
   }
 
@@ -37,11 +33,10 @@ class _TopicListState extends State<TopicList> {
     filterAuthor = filterAuthorController.text;
 
     var stream = db.getTopics(
-      topic: Topic(
-          title: filterTitle.isNotEmpty ? filterTitle : null,
-          author: filterAuthor.isNotEmpty ? filterAuthor : null,
-      )
-    );
+        topic: Topic(
+      title: filterTitle.isNotEmpty ? filterTitle : null,
+      authorId: filterAuthor.isNotEmpty ? filterAuthor : null,
+    ));
 
     stream.listen((List<Topic> data) {
       setState(() {
@@ -55,10 +50,11 @@ class _TopicListState extends State<TopicList> {
         users = data;
       });
     });
-  }
 
-  AWHUser findUserById(String id) {
-    return users.firstWhere((element) => element.id == id);
+    topics.forEach((topic) {
+      topic.author =
+          users.firstWhere((element) => element.id == topic.authorId);
+    });
   }
 
   List<Topic> filter() {
@@ -102,7 +98,7 @@ class _TopicListState extends State<TopicList> {
               decoration:
                   BoxDecoration(color: Theme.of(context).primaryColorLight),
               child: ListTile(
-                title: Text("${topics[i].title} - ${findUserById(topics[i].author).name}",
+                title: Text("${topics[i].title} - ${topics[i].author.name}",
                     style: TextStyle(
                       color: Theme.of(context).textTheme.headline6.color,
                       fontWeight: FontWeight.bold,
@@ -123,21 +119,18 @@ class _TopicListState extends State<TopicList> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 trailing: Icon(Icons.arrow_right,
                     color: Theme.of(context).textTheme.headline6.color),
-                // TODO("Date")
-                //subtitle: Container(
-                //   constraints: BoxConstraints(
-                //     maxHeight: 40.0,
-                //   ),
-                //   child: Html(
-                //     data: topics[i].description,
-                //   ),
-                //  child: Text(topics[i].description, maxLines: 3),
-                //),
+                subtitle: Container(
+                    constraints: BoxConstraints(
+                      maxHeight: 40.0,
+                    ),
+                    child: Text('${topics[i].updateDate.day}.'
+                        '${topics[i].updateDate.month}.'
+                        '${topics[i].updateDate.year}')),
                 onTap: () {
                   Navigator.pushNamed(
-                      context,
-                      TopicCurrent.routeName,
-                      arguments: RouteArguments(topics[i], findUserById(topics[i].author)),
+                    context,
+                    TopicCurrent.routeName,
+                    arguments: topics[i],
                   );
                 },
               ),

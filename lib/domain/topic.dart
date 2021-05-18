@@ -1,28 +1,59 @@
-class Topic{
+import 'package:ancient_world_history/domain/user.dart';
+
+class Topic {
   String id;
   String title;
-  String author;
-  String description;
-  //creation date
-  //date
-  //id of author, not name!
-  //img...
+  String authorId;
+  AWHUser author;
+  String text;
+  String topicDate;
+  DateTime creationDate;
+  DateTime updateDate;
+  List<String> images;
 
-  Topic({this.title, this.author, this.description});
+  Topic({
+    this.title,
+    this.authorId,
+    this.text,
+    this.topicDate,
+    this.creationDate,
+    this.updateDate,
+    this.images,
+  });
 
   Topic.fromJson(String id, Map<String, dynamic> data) {
     id = id;
     title = data['title'];
-    author = data['author'];
-    description = data['description'];
+    authorId = data['author_id'];
+    text = data['text'];
+    topicDate = data['topic_date'];
+    creationDate = data['creation_date'].toDate();
+    updateDate = data['update_date'].toDate();
+    images = List.from(data['images']);
   }
 
   Map<String, dynamic> toMap() {
     return {
       'title': title,
-      'author': author,
-      'description': description
+      'author_id': authorId,
+      'text': text,
+      'topic_date': topicDate,
+      'creation_date': creationDate,
+      'update_date': updateDate,
+      'images': images
+    };
+  }
+
+  Map<String, dynamic> toMapWithId() {
+    return {
+      'id': id,
+      'title': title,
+      'author_id': authorId,
+      'text': text,
+      'topic_date': topicDate,
+      'creation_date': creationDate,
+      'update_date': updateDate,
+      'images': images
     };
   }
 }
-
