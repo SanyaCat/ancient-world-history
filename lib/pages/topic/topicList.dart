@@ -1,8 +1,10 @@
+import 'package:ancient_world_history/domain/routes.dart';
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/pages/topic/topicCurrent.dart';
 import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ancient_world_history/domain/topic.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 // list of topics
 class TopicList extends StatefulWidget {
@@ -11,36 +13,44 @@ class TopicList extends StatefulWidget {
 }
 
 class _TopicListState extends State<TopicList> {
-  @override
-  void initState() {
-    clearFilter();
-    super.initState();
-  }
-
-  var topics = List<Topic>.empty();
-  var users = List<AWHUser>.empty();
+  var topics = List<Topic>.empty(growable: true);
+  var topicsFiltered = List<Topic>.empty(growable: true);
+  var users = List<AWHUser>.empty(growable: true);
+  Future future;
 
   var filterTitle = '';
   var filterTitleController = TextEditingController();
   var filterAuthor = '';
   var filterAuthorController = TextEditingController();
-  var filterText = '';
-  var filterHeight = 0.0;
+  var filterText = 'Все темы';
+  var filterHeight = 190.0;
   FireStoreService db = FireStoreService();
 
-  loadData() async {
-    filterTitle = filterTitleController.text;
-    filterAuthor = filterAuthorController.text;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
-    var stream = db.getTopics(
-        topic: Topic(
-      title: filterTitle.isNotEmpty ? filterTitle : null,
-      authorId: filterAuthor.isNotEmpty ? filterAuthor : null,
-    ));
+  void _onRefresh() async {
+    await loadData();
+    clearFilter();
+    _refreshController.refreshCompleted();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    future = loadData();
+  }
+
+  AWHUser findUserById(id) => users.firstWhere((element) => element.id == id);
+
+  Future<void> loadData() async {
+    var stream = db.getTopics();
 
     stream.listen((List<Topic> data) {
       setState(() {
         topics = data;
+        topicsFiltered = new List.from(topics, growable: true);
       });
     });
 
@@ -50,93 +60,110 @@ class _TopicListState extends State<TopicList> {
         users = data;
       });
     });
-
-    topics.forEach((topic) {
-      topic.author =
-          users.firstWhere((element) => element.id == topic.authorId);
-    });
   }
 
-  List<Topic> filter() {
+  Future<void> refreshPage() async {
+    await _refreshController.requestRefresh();
+  }
+
+  void filter() async {
     setState(() {
-      if (filterTitle.isNotEmpty)
+      topicsFiltered = List.from(topics);
+      if (filterTitle.isNotEmpty && filterAuthor.isNotEmpty) {
+        filterText = '$filterTitle/$filterAuthor';
+        topics.forEach((topic) {
+          if (!topic.title.contains(filterTitle) &&
+              !findUserById(topic.authorId).name.contains(filterAuthor))
+            topicsFiltered.remove(topic);
+        });
+      } else if (filterTitle.isNotEmpty) {
         filterText = filterTitle;
-      else
-        filterText = 'All';
-      if (filterAuthor.isNotEmpty) filterText += '/' + filterAuthor;
-      filterHeight = 0.0;
+        topics.forEach((topic) {
+          if (!topic.title.contains(filterTitle)) topicsFiltered.remove(topic);
+        });
+      } else if (filterAuthor.isNotEmpty) {
+        filterText = filterAuthor;
+        topics.forEach((topic) {
+          if (!findUserById(topic.authorId).name.contains(filterAuthor))
+            topicsFiltered.remove(topic);
+        });
+      } else {
+        filterText = 'Все темы';
+      }
     });
-
-    var list = topics;
-    return list;
   }
 
-  List<Topic> clearFilter() {
+  Future<void> clearFilter() async {
     setState(() {
-      filterText = 'All topics';
+      filterText = 'Все темы';
       filterTitle = '';
       filterAuthor = '';
       filterTitleController.clear();
       filterAuthorController.clear();
-      filterHeight = 0.0;
+      topicsFiltered = new List.from(topics, growable: true);
     });
-
-    var list = topics;
-    return list;
   }
 
   @override
   build(context) {
     var topicList = Expanded(
-      child: ListView.builder(
-        itemCount: topics.length,
-        itemBuilder: (context, i) {
-          return Card(
-            elevation: 2.0,
-            margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Container(
-              decoration:
-                  BoxDecoration(color: Theme.of(context).primaryColorLight),
-              child: ListTile(
-                title: Text("${topics[i].title} - ${topics[i].author.name}",
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.headline6.color,
-                      fontWeight: FontWeight.bold,
-                    )),
-                leading: Container(
-                  padding: EdgeInsets.only(right: 12),
-                  child: Icon(Icons.description,
-                      color: Theme.of(context).accentColor),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        width: 1,
-                        color: Theme.of(context).accentColor,
+      child: SmartRefresher(
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        child: new ListView.builder(
+          itemCount: topicsFiltered.length,
+          shrinkWrap: true,
+          itemBuilder: (context, i) {
+            return Card(
+              key: UniqueKey(),
+              elevation: 2,
+              margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Container(
+                decoration:
+                    BoxDecoration(color: Theme.of(context).primaryColorLight),
+                child: ListTile(
+                  title: Text(
+                      "${topicsFiltered[i].title} - ${findUserById(topicsFiltered[i].authorId).name}",
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.headline6.color,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  leading: Container(
+                    padding: EdgeInsets.only(right: 12),
+                    child: Icon(Icons.description,
+                        color: Theme.of(context).accentColor),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        right: BorderSide(
+                          width: 1,
+                          color: Theme.of(context).accentColor,
+                        ),
                       ),
                     ),
                   ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  trailing: Icon(Icons.arrow_right,
+                      color: Theme.of(context).textTheme.headline6.color),
+                  subtitle: Container(
+                      constraints: BoxConstraints(
+                        maxHeight: 40,
+                      ),
+                      child: Text('${topicsFiltered[i].updateDate.day}.'
+                          '${topicsFiltered[i].updateDate.month}.'
+                          '${topicsFiltered[i].updateDate.year}')),
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      TopicCurrent.routeName,
+                      arguments: RouteArguments(topicsFiltered[i],
+                          findUserById(topicsFiltered[i].authorId)),
+                    );
+                  },
                 ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                trailing: Icon(Icons.arrow_right,
-                    color: Theme.of(context).textTheme.headline6.color),
-                subtitle: Container(
-                    constraints: BoxConstraints(
-                      maxHeight: 40.0,
-                    ),
-                    child: Text('${topics[i].updateDate.day}.'
-                        '${topics[i].updateDate.month}.'
-                        '${topics[i].updateDate.year}')),
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    TopicCurrent.routeName,
-                    arguments: topics[i],
-                  );
-                },
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
 
@@ -165,7 +192,7 @@ class _TopicListState extends State<TopicList> {
           ),
           onPressed: () {
             setState(() {
-              filterHeight = (filterHeight == 0.0 ? 280 : 0.0);
+              filterHeight = (filterHeight == 0 ? 190 : 0);
             });
           },
           style: ElevatedButton.styleFrom(
@@ -174,10 +201,10 @@ class _TopicListState extends State<TopicList> {
         ));
 
     var filterForm = AnimatedContainer(
-      margin: EdgeInsets.symmetric(vertical: 0.0, horizontal: 7),
+      margin: EdgeInsets.symmetric(vertical: 0, horizontal: 7),
       child: Card(
         child: Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8),
           child: Column(
             children: [
               TextFormField(
@@ -192,6 +219,7 @@ class _TopicListState extends State<TopicList> {
               ),
               Row(
                 children: [
+                  // Apply Filter button
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
@@ -210,6 +238,8 @@ class _TopicListState extends State<TopicList> {
                     ),
                   ),
                   SizedBox(width: 10),
+
+                  // Clear Filter button
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
@@ -238,14 +268,17 @@ class _TopicListState extends State<TopicList> {
       height: filterHeight,
     );
 
-    loadData();
-
-    return Column(
-      children: <Widget>[
-        filterInfo,
-        filterForm,
-        topicList,
-      ],
+    return FutureBuilder(
+      future: future,
+      builder: (context, snapshot) {
+        return Column(
+          children: <Widget>[
+            filterInfo,
+            filterForm,
+            topicList,
+          ],
+        );
+      },
     );
   }
 }

@@ -46,7 +46,7 @@ class FireStoreService {
         .toList());
   }
 
-  Stream<List<Topic>> getTopics({Topic topic}) {
+  Stream<List<Topic>> getTopics() {
     return _topicCollection.snapshots().map((QuerySnapshot data) => data.docs
         .map((DocumentSnapshot doc) => Topic.fromJson(doc.id, doc.data()))
         .toList());

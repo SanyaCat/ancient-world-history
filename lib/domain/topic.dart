@@ -4,7 +4,6 @@ class Topic {
   String id;
   String title;
   String authorId;
-  AWHUser author;
   String text;
   String topicDate;
   DateTime creationDate;

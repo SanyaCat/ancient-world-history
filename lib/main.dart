@@ -55,6 +55,7 @@ class AWHApp extends StatelessWidget {
             ),
             initialRoute: LandingPage.routeName,
             routes: allRoutes,
+            debugShowCheckedModeBanner: false,
           ),
         );
       },

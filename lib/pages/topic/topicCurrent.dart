@@ -1,4 +1,4 @@
-import 'package:ancient_world_history/domain/topic.dart';
+import 'package:ancient_world_history/domain/routes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -8,11 +8,11 @@ class TopicCurrent extends StatelessWidget {
 
   @override
   build(context) {
-    final topic = ModalRoute.of(context).settings.arguments as Topic;
+    final args = ModalRoute.of(context).settings.arguments as RouteArguments;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(topic.title),
+        title: Text(args.topic.title),
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Container(
@@ -24,7 +24,7 @@ class TopicCurrent extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(8),
                   child: Text(
-                    'Автор: ${topic.author.name}',
+                    'Автор: ${args.user.name}',
                     style: TextStyle(fontSize: 24, fontStyle: FontStyle.italic),
                   ),
                 ),
@@ -32,7 +32,7 @@ class TopicCurrent extends StatelessWidget {
                   padding: EdgeInsets.all(8),
                   child: Html(
                       data: '<div style="font-size: 20">' +
-                          topic.text +
+                          args.topic.text +
                           '<//div>'),
                 ),
                 Padding(
@@ -40,13 +40,13 @@ class TopicCurrent extends StatelessWidget {
                   child: SizedBox(
                     height: 600,
                     child: ListView.builder(
-                      itemCount: topic.images.length,
+                      itemCount: args.topic.images.length,
                       itemBuilder: (_, index) => Padding(
                         padding: const EdgeInsets.symmetric(vertical: 2),
                         child: SizedBox(
                           width: 300,
                           child: Image.network(
-                            topic.images[index],
+                            args.topic.images[index],
                             loadingBuilder: (context, child, progress) =>
                                 progress == null
                                     ? child
