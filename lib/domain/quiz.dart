@@ -1,43 +1,43 @@
-class Topic {
+class Quiz {
   String id;
   String title;
   String authorId;
-  String text;
-  String topicDate;
+  String question;
+  String correctAnswer;
+  List<String> answers;
   DateTime creationDate;
   DateTime updateDate;
-  List<String> images;
 
-  Topic({
+  Quiz({
     this.title,
     this.authorId,
-    this.text,
-    this.topicDate,
+    this.question,
+    this.correctAnswer,
+    this.answers,
     this.creationDate,
     this.updateDate,
-    this.images,
   });
 
-  Topic.fromJson(String id, Map<String, dynamic> data) {
+  Quiz.fromJson(String id, Map<String, dynamic> data) {
     id = id;
     title = data['title'];
     authorId = data['author_id'];
-    text = data['text'];
-    topicDate = data['topic_date'];
+    question = data['question'];
+    correctAnswer = data['correct_answer'];
+    answers = List.from(data['answers']);
     creationDate = data['creation_date'].toDate();
     updateDate = data['update_date'].toDate();
-    images = List.from(data['images']);
   }
 
   Map<String, dynamic> toMap() {
     return {
       'title': title,
       'author_id': authorId,
-      'text': text,
-      'topic_date': topicDate,
+      'question': question,
+      'correct_answer': correctAnswer,
+      'answers': answers,
       'creation_date': creationDate,
       'update_date': updateDate,
-      'images': images
     };
   }
 
@@ -46,11 +46,11 @@ class Topic {
       'id': id,
       'title': title,
       'author_id': authorId,
-      'text': text,
-      'topic_date': topicDate,
+      'question': question,
+      'correct_answer': correctAnswer,
+      'answers': answers,
       'creation_date': creationDate,
       'update_date': updateDate,
-      'images': images
     };
   }
 }

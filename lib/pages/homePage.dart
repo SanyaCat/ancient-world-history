@@ -1,3 +1,4 @@
+import 'package:ancient_world_history/pages/quiz/quizAdd.dart';
 import 'package:ancient_world_history/pages/topic/topicAdd.dart';
 import 'package:ancient_world_history/pages/topic/topicList.dart';
 import 'package:ancient_world_history/pages/quiz/quizList.dart';
@@ -58,9 +59,8 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (sectionIndex == 0) {
-            Navigator.pushNamed(context, TopicAdd.routeName);
-          }
+          Navigator.pushNamed(context,
+              (sectionIndex == 0) ? TopicAdd.routeName : QuizAdd.routeName);
         },
         child: Icon(Icons.add),
         //backgroundColor: Theme.of(context).textTheme.headline6.color,

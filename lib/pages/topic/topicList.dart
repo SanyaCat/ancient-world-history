@@ -23,7 +23,7 @@ class _TopicListState extends State<TopicList> {
   var filterAuthor = '';
   var filterAuthorController = TextEditingController();
   var filterText = 'Все темы';
-  var filterHeight = 190.0;
+  var filterHeight = 0.0;
   FireStoreService db = FireStoreService();
 
   RefreshController _refreshController =
@@ -155,7 +155,7 @@ class _TopicListState extends State<TopicList> {
                     Navigator.pushNamed(
                       context,
                       TopicCurrent.routeName,
-                      arguments: RouteArguments(topicsFiltered[i],
+                      arguments: TopicRouteArguments(topicsFiltered[i],
                           findUserById(topicsFiltered[i].authorId)),
                     );
                   },
@@ -209,12 +209,12 @@ class _TopicListState extends State<TopicList> {
             children: [
               TextFormField(
                 controller: filterTitleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                decoration: InputDecoration(labelText: 'Название'),
                 onChanged: (String val) => setState(() => filterTitle = val),
               ),
               TextFormField(
                 controller: filterAuthorController,
-                decoration: InputDecoration(labelText: 'Author'),
+                decoration: InputDecoration(labelText: 'Автор'),
                 onChanged: (String val) => setState(() => filterAuthor = val),
               ),
               Row(

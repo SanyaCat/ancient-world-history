@@ -1,16 +1,26 @@
+import 'package:ancient_world_history/domain/quiz.dart';
 import 'package:ancient_world_history/domain/topic.dart';
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/pages/landingPage.dart';
+import 'package:ancient_world_history/pages/quiz/quizAdd.dart';
+import 'package:ancient_world_history/pages/quiz/quizCurrent.dart';
 import 'package:ancient_world_history/pages/topic/topicAdd.dart';
 import 'package:ancient_world_history/pages/topic/topicCurrent.dart';
 import 'package:ancient_world_history/pages/homePage.dart';
 import 'package:flutter/material.dart';
 
-class RouteArguments {
+class TopicRouteArguments {
   final Topic topic;
   final AWHUser user;
 
-  RouteArguments(this.topic, this.user);
+  TopicRouteArguments(this.topic, this.user);
+}
+
+class QuizRouteArguments {
+  final Quiz quiz;
+  final AWHUser user;
+
+  QuizRouteArguments(this.quiz, this.user);
 }
 
 class Route {
@@ -42,6 +52,14 @@ final routes = [
       name: 'Add Topic',
       route: TopicAdd.routeName,
       builder: (context) => TopicAdd()),
+  Route(
+      name: 'Current Quiz',
+      route: QuizCurrent.routeName,
+      builder: (context) => QuizCurrent()),
+  Route(
+      name: 'Add Quiz',
+      route: QuizAdd.routeName,
+      builder: (context) => QuizAdd()),
 ];
 
 final routesMap =

@@ -8,7 +8,7 @@ class TopicCurrent extends StatelessWidget {
 
   @override
   build(context) {
-    final args = ModalRoute.of(context).settings.arguments as RouteArguments;
+    final args = ModalRoute.of(context).settings.arguments as TopicRouteArguments;
 
     return Scaffold(
       appBar: AppBar(

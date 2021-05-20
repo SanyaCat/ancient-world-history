@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:ancient_world_history/domain/quiz.dart';
 import 'package:ancient_world_history/domain/topic.dart';
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,8 +12,8 @@ class FireStoreService {
       FirebaseFirestore.instance.collection('users');
   final CollectionReference _topicCollection =
       FirebaseFirestore.instance.collection('topics');
-  // final DocumentReference _imageCollection =
-  //     FirebaseFirestore.instance.collection('images').doc();
+  final CollectionReference _quizCollection =
+      FirebaseFirestore.instance.collection('quizzes');
 
   Future editUser(AWHUser user, context) async {
     ProgressDialog progress = ProgressDialog(context);
@@ -49,6 +50,12 @@ class FireStoreService {
   Stream<List<Topic>> getTopics() {
     return _topicCollection.snapshots().map((QuerySnapshot data) => data.docs
         .map((DocumentSnapshot doc) => Topic.fromJson(doc.id, doc.data()))
+        .toList());
+  }
+
+  Stream<List<Quiz>> getQuizzes() {
+    return _quizCollection.snapshots().map((QuerySnapshot data) => data.docs
+        .map((DocumentSnapshot doc) => Quiz.fromJson(doc.id, doc.data()))
         .toList());
   }
 
