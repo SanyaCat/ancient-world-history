@@ -24,9 +24,6 @@ class _TopicAddState extends State<TopicAdd> {
 
   @override
   build(context) {
-    ProgressDialog progress = ProgressDialog(context);
-    progress.style(message: 'Loading...');
-
     return Scaffold(
       appBar: AppBar(
         title: typing

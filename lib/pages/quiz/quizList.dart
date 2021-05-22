@@ -130,7 +130,7 @@ class _QuizListState extends State<QuizList> {
                       )),
                   leading: Container(
                     padding: EdgeInsets.only(right: 12),
-                    child: Icon(Icons.description,
+                    child: Icon(Icons.assignment_turned_in_rounded,
                         color: Theme.of(context).accentColor),
                     decoration: BoxDecoration(
                       border: Border(

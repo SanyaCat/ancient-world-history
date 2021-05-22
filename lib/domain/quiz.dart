@@ -2,18 +2,14 @@ class Quiz {
   String id;
   String title;
   String authorId;
-  String question;
-  String correctAnswer;
-  List<String> answers;
+  List<QuizQuestion> questions;
   DateTime creationDate;
   DateTime updateDate;
 
   Quiz({
     this.title,
     this.authorId,
-    this.question,
-    this.correctAnswer,
-    this.answers,
+    this.questions,
     this.creationDate,
     this.updateDate,
   });
@@ -22,9 +18,7 @@ class Quiz {
     id = id;
     title = data['title'];
     authorId = data['author_id'];
-    question = data['question'];
-    correctAnswer = data['correct_answer'];
-    answers = List.from(data['answers']);
+    questions = (data['questions'] as List).map((q) => QuizQuestion.fromJson(q)).toList();
     creationDate = data['creation_date'].toDate();
     updateDate = data['update_date'].toDate();
   }
@@ -33,9 +27,7 @@ class Quiz {
     return {
       'title': title,
       'author_id': authorId,
-      'question': question,
-      'correct_answer': correctAnswer,
-      'answers': answers,
+      'questions': questions.map((q) => q.toMap()).toList(),
       'creation_date': creationDate,
       'update_date': updateDate,
     };
@@ -46,11 +38,36 @@ class Quiz {
       'id': id,
       'title': title,
       'author_id': authorId,
+      'questions': questions.map((q) => q.toMap()).toList(),
+      'creation_date': creationDate,
+      'update_date': updateDate,
+    };
+  }
+}
+
+// one question of the quiz
+class QuizQuestion {
+  String question;
+  String correctAnswer;
+  List<String> answers;
+
+  QuizQuestion({
+    this.question,
+    this.correctAnswer,
+    this.answers,
+  });
+
+  QuizQuestion.fromJson(Map<String, dynamic> data) {
+    question = data['question'];
+    correctAnswer = data['correct_answer'];
+    answers = List.from(data['answers']);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
       'question': question,
       'correct_answer': correctAnswer,
       'answers': answers,
-      'creation_date': creationDate,
-      'update_date': updateDate,
     };
   }
 }

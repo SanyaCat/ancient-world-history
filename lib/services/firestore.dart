@@ -35,6 +35,16 @@ class FireStoreService {
         .whenComplete(() => progress.hide());
   }
 
+  Future editQuiz(Quiz quiz, context) async {
+    ProgressDialog progress = ProgressDialog(context);
+    progress.style(message: 'Сохранение...');
+    await progress.show();
+    return await _quizCollection
+        .doc(quiz.id)
+        .set(quiz.toMap())
+        .whenComplete(() => progress.hide());
+  }
+
   // Stream<AWHUser> getUser(String id) {
   //   return _userCollection.snapshots().map((QuerySnapshot data) => data.docs
   //       .map((DocumentSnapshot doc) => AWHUser.fromJson(doc.id, doc.data()))
