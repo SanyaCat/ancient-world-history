@@ -19,7 +19,7 @@ class Topic {
   });
 
   Topic.fromJson(String id, Map<String, dynamic> data) {
-    id = id;
+    this.id = id;
     title = data['title'];
     authorId = data['author_id'];
     text = data['text'];

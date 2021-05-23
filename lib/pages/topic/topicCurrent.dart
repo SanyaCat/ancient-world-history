@@ -1,4 +1,6 @@
 import 'package:ancient_world_history/domain/routes.dart';
+import 'package:ancient_world_history/pages/topic/topicAdd.dart';
+import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -8,26 +10,71 @@ class TopicCurrent extends StatelessWidget {
 
   @override
   build(context) {
-    final args = ModalRoute.of(context).settings.arguments as TopicRouteArguments;
+    final args =
+        ModalRoute.of(context).settings.arguments as TopicRouteArguments;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(args.topic.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              Navigator.pushNamed(context, TopicAdd.routeName,
+                  arguments: args.topic);
+              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(args.topic.id)));
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content:
+                      Text("Вы уверены что хотите удалить выбранную тему?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        await FireStoreService()
+                            .deleteTopic(args.topic, context);
+                      },
+                      child: Text(
+                        'Да',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Нет',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Container(
         child: Scrollbar(
           child: SingleChildScrollView(
             child: Column(
-              //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text(
-                    'Автор: ${args.user.name}',
-                    style: TextStyle(fontSize: 24, fontStyle: FontStyle.italic),
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.all(8),
+                //   child: Text(
+                //     'Автор: ${args.user.name}',
+                //     style: TextStyle(fontSize: 24, fontStyle: FontStyle.italic),
+                //   ),
+                // ),
                 Padding(
                   padding: EdgeInsets.all(8),
                   child: Html(
@@ -54,11 +101,13 @@ class TopicCurrent extends StatelessWidget {
                                         child: Padding(
                                           padding: EdgeInsets.all(4),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               CircularProgressIndicator(
                                                 valueColor:
-                                                    AlwaysStoppedAnimation<Color>(
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(
                                                   Theme.of(context).accentColor,
                                                 ),
                                               ),

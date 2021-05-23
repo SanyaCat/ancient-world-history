@@ -20,9 +20,13 @@ class _TopicAddState extends State<TopicAdd> {
   final htmlController = HtmlEditorController();
   bool typing = false;
   List<File> topicImages = List.empty(growable: true);
+  bool edit = false;
 
   @override
   build(context) {
+    final args = ModalRoute.of(context).settings.arguments as Topic;
+    edit = args != null;
+
     return Scaffold(
       appBar: AppBar(
         title: typing
@@ -69,25 +73,30 @@ class _TopicAddState extends State<TopicAdd> {
                 List<String> imagesUrls = List.empty(growable: true);
 
                 for (int i = 0; i < topicImages.length; i++) {
-                  imagesUrls.add(await FireStoreService().uploadFile(topicImages[i], context));
+                  imagesUrls.add(await FireStoreService()
+                      .uploadFile(topicImages[i], context));
                 }
-
-                // topicImages.forEach((image) async {
-                //   imagesUrls.add(await FireStoreService().uploadFile(image, context));
-                // });
 
                 Topic topic = Topic(
                   title: _titleController.text,
                   authorId: Provider.of<AWHUser>(context, listen: false).id,
                   text: await htmlController.getText(),
                   topicDate: '',
-                  creationDate: DateTime.now(),
+                  creationDate: (edit) ? args.creationDate : DateTime.now(),
                   updateDate: DateTime.now(),
                   images: imagesUrls,
                 );
-                await FireStoreService().editTopic(topic, context);
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Тема добавлена!')));
+                if (edit) {
+                  topic.id = args.id;
+                  await FireStoreService().editTopic(topic, context);
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Тема изменена!')));
+                  Navigator.pop(context);
+                } else {
+                  await FireStoreService().addTopic(topic, context);
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Тема добавлена!')));
+                }
                 Navigator.pop(context);
               } else {
                 ScaffoldMessenger.of(context)
@@ -103,7 +112,7 @@ class _TopicAddState extends State<TopicAdd> {
           controller: htmlController,
           htmlEditorOptions: HtmlEditorOptions(
             hint: 'Введите текст...',
-            initialText: '',
+            initialText: (edit) ? args.text : '',
           ),
           htmlToolbarOptions: HtmlToolbarOptions(
             defaultToolbarButtons: [

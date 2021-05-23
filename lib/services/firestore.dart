@@ -25,17 +25,37 @@ class FireStoreService {
         .whenComplete(() => progress.hide());
   }
 
-  Future editTopic(Topic topic, context) async {
+  Future addTopic(Topic topic, context) async {
     ProgressDialog progress = ProgressDialog(context);
     progress.style(message: 'Сохранение...');
     await progress.show();
-    return await _topicCollection
+    await _topicCollection
         .doc(topic.id)
         .set(topic.toMap())
         .whenComplete(() => progress.hide());
   }
 
-  Future editQuiz(Quiz quiz, context) async {
+  Future editTopic(Topic topic, context) async {
+    ProgressDialog progress = ProgressDialog(context);
+    progress.style(message: 'Сохранение...');
+    await progress.show();
+    await _topicCollection
+        .doc(topic.id)
+        .update(topic.toMap())
+        .whenComplete(() => progress.hide());
+  }
+
+  Future deleteTopic(Topic topic, context) async {
+    ProgressDialog progress = ProgressDialog(context);
+    progress.style(message: 'Удаление...');
+    await progress.show();
+    await _topicCollection
+        .doc(topic.id)
+        .delete()
+        .whenComplete(() => progress.hide());
+  }
+
+  Future addQuiz(Quiz quiz, context) async {
     ProgressDialog progress = ProgressDialog(context);
     progress.style(message: 'Сохранение...');
     await progress.show();
@@ -45,11 +65,25 @@ class FireStoreService {
         .whenComplete(() => progress.hide());
   }
 
-  // Stream<AWHUser> getUser(String id) {
-  //   return _userCollection.snapshots().map((QuerySnapshot data) => data.docs
-  //       .map((DocumentSnapshot doc) => AWHUser.fromJson(doc.id, doc.data()))
-  //       .firstWhere((element) => element.id == id));
-  // }
+  Future editQuiz(Quiz quiz, context) async {
+    ProgressDialog progress = ProgressDialog(context);
+    progress.style(message: 'Сохранение...');
+    await progress.show();
+    await _quizCollection
+        .doc(quiz.id)
+        .update(quiz.toMap())
+        .whenComplete(() => progress.hide());
+  }
+
+  Future deleteQuiz(Quiz quiz, context) async {
+    ProgressDialog progress = ProgressDialog(context);
+    progress.style(message: 'Удаление...');
+    await progress.show();
+    await _quizCollection
+        .doc(quiz.id)
+        .delete()
+        .whenComplete(() => progress.hide());
+  }
 
   Stream<List<AWHUser>> getUsers() {
     return _userCollection.snapshots().map((QuerySnapshot data) => data.docs

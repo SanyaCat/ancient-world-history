@@ -1,5 +1,7 @@
 import 'package:ancient_world_history/domain/routes.dart';
 import 'package:ancient_world_history/domain/user.dart';
+import 'package:ancient_world_history/pages/quiz/quizAdd.dart';
+import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/material.dart';
 
 class QuizCurrent extends StatefulWidget {
@@ -58,6 +60,51 @@ class _QuizCurrentState extends State<QuizCurrent>
     return Scaffold(
       appBar: AppBar(
         title: Text(args.quiz.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              Navigator.pushNamed(context, QuizAdd.routeName,
+                  arguments: args.quiz);
+              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(args.topic.id)));
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content:
+                  Text("Вы уверены что хотите удалить выбранный тест?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        await FireStoreService()
+                            .deleteQuiz(args.quiz, context);
+                      },
+                      child: Text(
+                        'Да',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Нет',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(

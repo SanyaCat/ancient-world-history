@@ -15,7 +15,7 @@ class Quiz {
   });
 
   Quiz.fromJson(String id, Map<String, dynamic> data) {
-    id = id;
+    this.id = id;
     title = data['title'];
     authorId = data['author_id'];
     questions = (data['questions'] as List).map((q) => QuizQuestion.fromJson(q)).toList();

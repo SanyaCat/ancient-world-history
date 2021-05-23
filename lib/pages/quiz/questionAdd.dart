@@ -17,9 +17,13 @@ class _QuestionAddState extends State<QuestionAdd> {
     TextEditingController(text: 'ответ 2'),
   ], growable: true);
   var correct = 0;
+  bool edit = false;
 
   @override
   build(context) {
+    final args = ModalRoute.of(context).settings.arguments as QuizQuestion;
+    edit = args != null;
+
     return Scaffold(
       appBar: AppBar(
         title: typing
@@ -117,9 +121,15 @@ class _QuestionAddState extends State<QuestionAdd> {
                   ),
                 ),
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                // TODO: ОТОБРАЗИТЬ ПРАВИЛЬНЫЙ
-                trailing: Icon(Icons.arrow_right,
-                    color: Theme.of(context).textTheme.headline6.color),
+                trailing: IconButton(
+                  icon: Icon(Icons.delete_outline,
+                      color: Theme.of(context).textTheme.headline6.color),
+                  onPressed: () {
+                    setState(() {
+                      _answerControllers.removeAt(i);
+                    });
+                  },
+                )
               ),
             ),
           );

@@ -16,9 +16,14 @@ class _QuizAddState extends State<QuizAdd> {
   final _titleController = TextEditingController(text: 'Введите название');
   bool typing = false;
   List<QuizQuestion> _questions = List.empty(growable: true);
+  bool edit = false;
 
   @override
   build(context) {
+    final args = ModalRoute.of(context).settings.arguments as Quiz;
+    edit = args != null;
+    if (edit) _questions = args.questions;
+
     return Scaffold(
       appBar: AppBar(
         title: typing
@@ -56,12 +61,20 @@ class _QuizAddState extends State<QuizAdd> {
                   title: _titleController.text,
                   authorId: Provider.of<AWHUser>(context, listen: false).id,
                   questions: _questions,
-                  creationDate: DateTime.now(),
+                  creationDate: (edit) ? args.creationDate : DateTime.now(),
                   updateDate: DateTime.now(),
                 );
-                await FireStoreService().editQuiz(quiz, context);
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Тест добавлен!')));
+                if (edit) {
+                  quiz.id = args.id;
+                  await FireStoreService().editQuiz(quiz, context);
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Тест изменен!')));
+                  Navigator.pop(context);
+                } else {
+                  await FireStoreService().addQuiz(quiz, context);
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text('Тест добавлен!')));
+                }
                 Navigator.pop(context);
               } else {
                 ScaffoldMessenger.of(context)
@@ -112,16 +125,19 @@ class _QuizAddState extends State<QuizAdd> {
                   child: Text('${_questions[i].correctAnswer}'),
                 ),
                 // onTap: () async {
-                //   final question = await Navigator.pushNamed(
-                //     context,
-                //     QuestionAdd.routeName,
-                //     // arguments: QuizRouteArguments(quizzesFiltered[i],
-                //     //     findUserById(quizzesFiltered[i].authorId)),
-                //   );
-                //   setState(() {
-                //     _questions.add(question);
-                //   });
+                //   // setState(() {
+                //     await Navigator.pushNamed(
+                //       context,
+                //       QuestionAdd.routeName,
+                //       arguments: _questions[i],
+                //     );
+                //   // });
                 // },
+                onLongPress: () {
+                  setState(() {
+                    _questions.removeAt(i);
+                  });
+                },
               ),
             ),
           );
