@@ -2,7 +2,7 @@ import 'package:ancient_world_history/domain/quiz.dart';
 import 'package:ancient_world_history/domain/topic.dart';
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/pages/landingPage.dart';
-import 'package:ancient_world_history/pages/quiz/QuestionAdd.dart';
+import 'package:ancient_world_history/pages/quiz/questionAdd.dart';
 import 'package:ancient_world_history/pages/quiz/quizAdd.dart';
 import 'package:ancient_world_history/pages/quiz/quizCurrent.dart';
 import 'package:ancient_world_history/pages/topic/topicAdd.dart';

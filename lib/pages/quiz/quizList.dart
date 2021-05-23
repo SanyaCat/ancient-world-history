@@ -203,6 +203,7 @@ class _QuizListState extends State<QuizList> {
     var filterForm = AnimatedContainer(
       margin: EdgeInsets.symmetric(vertical: 0, horizontal: 7),
       child: Card(
+        color: Theme.of(context).primaryColor,
         child: Padding(
           padding: EdgeInsets.all(8),
           child: Column(
@@ -233,7 +234,7 @@ class _QuizListState extends State<QuizList> {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).primaryColor,
+                        primary: Theme.of(context).primaryColorLight,
                       ),
                     ),
                   ),

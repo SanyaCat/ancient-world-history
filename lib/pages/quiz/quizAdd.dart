@@ -1,6 +1,6 @@
 import 'package:ancient_world_history/domain/quiz.dart';
 import 'package:ancient_world_history/domain/user.dart';
-import 'package:ancient_world_history/pages/quiz/QuestionAdd.dart';
+import 'package:ancient_world_history/pages/quiz/questionAdd.dart';
 import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

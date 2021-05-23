@@ -44,9 +44,9 @@ class AWHApp extends StatelessWidget {
           child: MaterialApp(
             title: 'История Древнего мира',
             theme: ThemeData(
-              primaryColor: Colors.amber,
-              primaryColorLight: Colors.amberAccent,
-              primaryColorDark: Color.fromARGB(100, 255, 200, 0),
+              primaryColor: Colors.amber[200],
+              primaryColorLight: Colors.yellow[600],
+              primaryColorDark: Color.fromARGB(100, 206, 167, 13),
               textTheme: TextTheme(
                 headline6: TextStyle(color: Colors.black54),
                 caption: TextStyle(color: Colors.black38),
