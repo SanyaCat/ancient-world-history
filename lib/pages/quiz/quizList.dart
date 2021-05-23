@@ -4,6 +4,7 @@ import 'package:ancient_world_history/domain/routes.dart';
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/services/firestore.dart';
 import 'package:ancient_world_history/domain/quiz.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 // list of topics
@@ -151,6 +152,14 @@ class _QuizListState extends State<QuizList> {
                       child: Text('${quizzesFiltered[i].updateDate.day}.'
                           '${quizzesFiltered[i].updateDate.month}.'
                           '${quizzesFiltered[i].updateDate.year}')),
+                  // subtitle: Container(
+                  //     constraints: BoxConstraints(
+                  //       maxHeight: 40,
+                  //     ),
+                  //     child: Text((Provider.of<AWHUser>(context).results.where((element) => element.quizId == quizzesFiltered[i].id).length == 0) ? '' :
+                  //         Provider.of<AWHUser>(context).results.where((element) => element.quizId == quizzesFiltered[i].id).first.correct ,
+                  //     ),
+                  // ),
                   onTap: () {
                     Navigator.pushNamed(
                       context,

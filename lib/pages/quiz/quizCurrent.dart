@@ -18,7 +18,6 @@ class _QuizCurrentState extends State<QuizCurrent>
   Animation _animation;
   var currentQuestion = 0;
   List<int> chosenAnswers = List.filled(50, 0);
-  var score = 0;
   var timeText = "";
   UserResult result;
   List<bool> answered = List.filled(8, false);
@@ -30,11 +29,12 @@ class _QuizCurrentState extends State<QuizCurrent>
     _animation = Tween<double>(begin: 0, end: 1).animate(_progressController);
     _animation.addListener(() {
       setState(() {
-        var seconds = initSeconds - (_progressController.value * initSeconds).floor();
+        var seconds =
+            initSeconds - (_progressController.value * initSeconds).floor();
         if (seconds >= 60)
           timeText = '${seconds ~/ 60} мин. ${seconds % 60} сек.';
         else
-        timeText = '${seconds % 60} сек.';
+          timeText = '${seconds % 60} сек.';
       });
     });
 
@@ -55,7 +55,6 @@ class _QuizCurrentState extends State<QuizCurrent>
         ModalRoute.of(context).settings.arguments as QuizRouteArguments;
 
     final questions = args.quiz.questions;
-    result = UserResult(args.quiz.id);
 
     return Scaffold(
       appBar: AppBar(
@@ -76,14 +75,13 @@ class _QuizCurrentState extends State<QuizCurrent>
                 context: context,
                 builder: (context) => AlertDialog(
                   content:
-                  Text("Вы уверены что хотите удалить выбранный тест?"),
+                      Text("Вы уверены что хотите удалить выбранный тест?"),
                   actions: [
                     TextButton(
                       onPressed: () async {
                         Navigator.pop(context);
                         Navigator.pop(context);
-                        await FireStoreService()
-                            .deleteQuiz(args.quiz, context);
+                        await FireStoreService().deleteQuiz(args.quiz, context);
                       },
                       child: Text(
                         'Да',
@@ -173,14 +171,6 @@ class _QuizCurrentState extends State<QuizCurrent>
           Divider(),
           SizedBox(height: 8),
           Container(
-            // height: 34 +
-            //   68.0 *
-            //       args.quiz.questions.((a, b) => a.answers.length > b.answers.length ? a : b),
-            // height: 400,
-            // child: PageView.builder(
-            //   itemCount: args.quiz.questions.length,
-            //   itemBuilder: (BuildContext context, int index) {
-            //     return
             child: Container(
               margin: EdgeInsets.all(8),
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
@@ -207,11 +197,6 @@ class _QuizCurrentState extends State<QuizCurrent>
                             fontWeight: FontWeight.bold,
                           )),
                       contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      // trailing: Container(
-                      //   height: 26,
-                      //   width: 26,
-                      //   decoration: BoxD,
-                      // ),
                       trailing: (answered[currentQuestion])
                           ? (questions[currentQuestion].answers[i] ==
                                   questions[currentQuestion].correctAnswer)
@@ -223,6 +208,7 @@ class _QuizCurrentState extends State<QuizCurrent>
                               ? Icons.circle
                               : Icons.blur_circular),
                       onTap: () {
+                        if (answered[currentQuestion]) return;
                         setState(() {
                           chosenAnswers[currentQuestion] = i;
                         });
@@ -231,8 +217,6 @@ class _QuizCurrentState extends State<QuizCurrent>
                   );
                 },
               ),
-              // );
-              // },
             ),
           ),
           Container(
@@ -252,32 +236,59 @@ class _QuizCurrentState extends State<QuizCurrent>
                     });
                   },
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      answered[currentQuestion] = true;
-                    });
-                  },
-                  child: Text(
-                    'Подтвердить',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColorLight,
+                Visibility(
+                  visible: !answered[currentQuestion],
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        answered[currentQuestion] = true;
+                      });
+                    },
+                    child: Text(
+                      'Подтвердить',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColorLight,
+                      ),
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).accentColor,
+                    style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).accentColor,
+                    ),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.chevron_right),
                   onPressed: () {
-                    setState(() {
+                    setState(() async {
                       if (currentQuestion < questions.length - 1) {
                         currentQuestion++;
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Тест пройден!')));
-                        Navigator.pop(context);
+                        var score = 0;
+                        for (int i = 0; i < questions.length; i++) {
+                          if (questions[i].correctAnswer ==
+                              questions[i].answers[chosenAnswers[i]]) score++;
+                        }
+                        if (args.user.results
+                                .where(
+                                    (element) => element.quizId == args.quiz.id)
+                                .length >
+                            0) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  'Тест уже был пройден! [$score/${questions.length}]')));
+                        } else {
+                          await FireStoreService().saveQuiz(
+                              args.user,
+                              UserResult(
+                                args.quiz.id,
+                                score,
+                                questions.length,
+                              ),
+                              context);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  'Тест пройден! [$score/${questions.length}]')));
+                          Navigator.pop(context);
+                        }
                       }
                     });
                   },

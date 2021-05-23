@@ -37,21 +37,26 @@ class AWHUser {
 
 class UserResult {
   String quizId;
-  double mark;
+  int correct;
+  int total;
 
-  UserResult(quizId) {
+  UserResult(quizId, correct, total) {
     this.quizId = quizId;
+    this.correct = correct;
+    this.total = total;
   }
 
   UserResult.fromJson(Map<String, dynamic> data) {
     quizId = data['quiz_id'];
-    mark = data['mark'];
+    correct = data['correct'];
+    total = data['total'];
   }
 
   Map<String, dynamic> toMap() {
     return {
       'quiz_id': quizId,
-      'mark': mark,
+      'correct': correct,
+      'total': total,
     };
   }
 }
