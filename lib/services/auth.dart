@@ -11,6 +11,9 @@ class AuthService {
       UserCredential result = await _fAuth.signInWithEmailAndPassword(
           email: email, password: password);
       User user = result.user;
+
+      if (!user.emailVerified) await user.sendEmailVerification();
+
       return AWHUser.fromFirebase(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -47,6 +50,8 @@ class AuthService {
         await userRef.set(userData);
       }
 
+      await user.sendEmailVerification();
+
       return AWHUser.register(user, name, admin);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -65,12 +70,7 @@ class AuthService {
     await _fAuth.signOut();
   }
 
-  Stream<AWHUser> get currentUser {
-    //name
-    //admin
-
-    return _fAuth
-        .authStateChanges()
-        .map((User user) => user != null ? AWHUser.fromFirebase(user) : null);
-  }
+  Stream<AWHUser> get currentUser => _fAuth
+      .authStateChanges()
+      .map((User user) => user != null ? AWHUser.fromFirebase(user) : null);
 }

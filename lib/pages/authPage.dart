@@ -1,6 +1,7 @@
 import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/services/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // user authentication
 class AuthPage extends StatefulWidget {
@@ -95,11 +96,10 @@ class _AuthPageState extends State<AuthPage> {
                 _inputBox(Icon(Icons.email), 'Почта', _emailController, false),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 20),
+            padding: EdgeInsets.only(bottom: 25),
             child: _inputBox(
                 Icon(Icons.lock), 'Пароль', _passwordController, true),
           ),
-          SizedBox(height: 20),
           Padding(
             padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
             child: Container(
@@ -119,25 +119,24 @@ class _AuthPageState extends State<AuthPage> {
         children: [
           SizedBox(height: 20),
           Padding(
-            padding: EdgeInsets.only(bottom: 20, top: 30),
+            padding: EdgeInsets.only(bottom: 10, top: 30),
             child:
                 _inputBox(Icon(Icons.email), 'Почта', _emailController, false),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 20),
+            padding: EdgeInsets.only(bottom: 10),
             child: _inputBox(
                 Icon(Icons.lock), 'Пароль', _passwordController, true),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 20),
+            padding: EdgeInsets.only(bottom: 10),
             child: _inputBox(Icon(Icons.lock), 'Подтвердите пароль',
                 _passwordCheckController, true),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 20),
-            child: _inputBox(Icon(Icons.lock), 'Имя', _nameController, true),
+            padding: EdgeInsets.only(bottom: 25),
+            child: _inputBox(Icon(Icons.title), 'Имя', _nameController, false),
           ),
-          SizedBox(height: 20),
           Padding(
             padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
             child: Container(
@@ -153,7 +152,7 @@ class _AuthPageState extends State<AuthPage> {
 
   Widget _logo() {
     return Padding(
-      padding: EdgeInsets.only(top: 70),
+      padding: EdgeInsets.only(top: 50),
       child: Container(
         // title
         child: Align(
@@ -178,6 +177,7 @@ class _AuthPageState extends State<AuthPage> {
       child: TextField(
         controller: controller,
         obscureText: obscure,
+        maxLength: 20,
         style: TextStyle(
             fontSize: 20, color: Theme.of(context).textTheme.headline6.color),
         decoration: InputDecoration(
@@ -186,14 +186,16 @@ class _AuthPageState extends State<AuthPage> {
             fontSize: 20,
             color: Theme.of(context).textTheme.caption.color,
           ),
+          counterText: "",
           hintText: hint,
           focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Theme.of(context).textTheme.headline6.color,
-                  width: 3)),
+            borderSide: BorderSide(
+                color: Theme.of(context).textTheme.headline6.color, width: 2),
+          ),
           enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Theme.of(context).textTheme.caption.color, width: 1)),
+            borderSide: BorderSide(
+                color: Theme.of(context).textTheme.caption.color, width: 1),
+          ),
           prefixIcon: Padding(
             padding: EdgeInsets.only(left: 10, right: 10),
             child: IconTheme(

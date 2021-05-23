@@ -21,8 +21,8 @@ class AWHUser {
     this.id = id;
     name = data['name'];
     admin = data['admin'];
-    // results =
-    //     (data['results'] as List).map((r) => UserResult.fromJson(r)).toList();
+    results =
+        (data['results'] as List).map((r) => UserResult.fromJson(r)).toList();
   }
 
   Map<String, dynamic> toMap() {
