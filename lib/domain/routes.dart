@@ -5,6 +5,7 @@ import 'package:ancient_world_history/pages/landingPage.dart';
 import 'package:ancient_world_history/pages/quiz/questionAdd.dart';
 import 'package:ancient_world_history/pages/quiz/quizAdd.dart';
 import 'package:ancient_world_history/pages/quiz/quizCurrent.dart';
+import 'package:ancient_world_history/pages/quiz/quizIntro.dart';
 import 'package:ancient_world_history/pages/topic/topicAdd.dart';
 import 'package:ancient_world_history/pages/topic/topicCurrent.dart';
 import 'package:ancient_world_history/pages/homePage.dart';
@@ -20,8 +21,9 @@ class TopicRouteArguments {
 class QuizRouteArguments {
   final Quiz quiz;
   final AWHUser user;
+  final AWHUser currentUser;
 
-  QuizRouteArguments(this.quiz, this.user);
+  QuizRouteArguments(this.quiz, this.user, this.currentUser);
 }
 
 class Route {
@@ -65,6 +67,10 @@ final routes = [
       name: 'Add Question',
       route: QuestionAdd.routeName,
       builder: (context) => QuestionAdd()),
+  Route(
+      name: 'Introduce Quiz',
+      route: QuizIntro.routeName,
+      builder: (context) => QuizIntro()),
 ];
 
 final routesMap =

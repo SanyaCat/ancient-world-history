@@ -1,6 +1,5 @@
 import 'package:ancient_world_history/domain/routes.dart';
 import 'package:ancient_world_history/domain/user.dart';
-import 'package:ancient_world_history/pages/quiz/quizAdd.dart';
 import 'package:ancient_world_history/services/firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -56,53 +55,14 @@ class _QuizCurrentState extends State<QuizCurrent>
 
     final questions = args.quiz.questions;
 
+    bool checkFinished() {
+      for (int i = 0; i < questions.length; i++) if (!answered[i]) return false;
+      return true;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(args.quiz.title),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              Navigator.pushNamed(context, QuizAdd.routeName,
-                  arguments: args.quiz);
-              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(args.topic.id)));
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  content:
-                      Text("Вы уверены что хотите удалить выбранный тест?"),
-                  actions: [
-                    TextButton(
-                      onPressed: () async {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        await FireStoreService().deleteQuiz(args.quiz, context);
-                      },
-                      child: Text(
-                        'Да',
-                        style: TextStyle(color: Theme.of(context).accentColor),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Нет',
-                        style: TextStyle(color: Theme.of(context).accentColor),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(
@@ -257,46 +217,60 @@ class _QuizCurrentState extends State<QuizCurrent>
                 ),
                 IconButton(
                   icon: Icon(Icons.chevron_right),
-                  onPressed: () {
-                    setState(() async {
-                      if (currentQuestion < questions.length - 1) {
+                  onPressed: () async {
+                    if (currentQuestion < questions.length - 1) {
+                      setState(() {
                         currentQuestion++;
-                      } else {
-                        var score = 0;
-                        for (int i = 0; i < questions.length; i++) {
-                          if (questions[i].correctAnswer ==
-                              questions[i].answers[chosenAnswers[i]]) score++;
-                        }
-                        if (args.user.results
-                                .where(
-                                    (element) => element.quizId == args.quiz.id)
-                                .length >
-                            0) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  'Тест уже был пройден! [$score/${questions.length}]')));
-                        } else {
-                          await FireStoreService().saveQuiz(
-                              args.user,
-                              UserResult(
-                                args.quiz.id,
-                                score,
-                                questions.length,
-                              ),
-                              context);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(
-                                  'Тест пройден! [$score/${questions.length}]')));
-                          Navigator.pop(context);
-                        }
-                      }
-                    });
+                      });
+                    }
                   },
                 ),
               ],
             ),
           ),
-          // ),
+          Visibility(
+            visible: checkFinished(),
+            child: ElevatedButton(
+              onPressed: () async {
+                var score = 0;
+                for (int i = 0; i < questions.length; i++) {
+                  if (questions[i].correctAnswer ==
+                      questions[i].answers[chosenAnswers[i]]) score++;
+                }
+                if (args.currentUser.results
+                        .where((element) => element.quizId == args.quiz.id)
+                        .length >
+                    0) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          'Тест уже был пройден! [$score/${questions.length}]')));
+                  Navigator.pop(context);
+                } else {
+                  await FireStoreService().saveQuiz(
+                      args.user,
+                      UserResult(
+                        args.quiz.id,
+                        score,
+                        questions.length,
+                      ),
+                      context);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content:
+                          Text('Тест пройден! [$score/${questions.length}]')));
+                  Navigator.pop(context);
+                }
+              },
+              child: Text(
+                'Завершить тест',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColorLight,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).accentColor,
+              ),
+            ),
+          )
         ],
       ),
     );

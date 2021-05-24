@@ -1,7 +1,7 @@
-import 'package:ancient_world_history/pages/quiz/quizCurrent.dart';
+import 'package:ancient_world_history/domain/user.dart';
+import 'package:ancient_world_history/pages/quiz/quizIntro.dart';
 import 'package:flutter/material.dart';
 import 'package:ancient_world_history/domain/routes.dart';
-import 'package:ancient_world_history/domain/user.dart';
 import 'package:ancient_world_history/services/firestore.dart';
 import 'package:ancient_world_history/domain/quiz.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +28,7 @@ class _QuizListState extends State<QuizList> {
   FireStoreService db = FireStoreService();
 
   RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+      RefreshController(initialRefresh: false);
 
   void _onRefresh() async {
     await loadData();
@@ -121,7 +121,7 @@ class _QuizListState extends State<QuizList> {
               margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: Container(
                 decoration:
-                BoxDecoration(color: Theme.of(context).primaryColorLight),
+                    BoxDecoration(color: Theme.of(context).primaryColorLight),
                 child: ListTile(
                   title: Text(
                       "${quizzesFiltered[i].title} - ${findUserById(quizzesFiltered[i].authorId).name}",
@@ -163,9 +163,11 @@ class _QuizListState extends State<QuizList> {
                   onTap: () {
                     Navigator.pushNamed(
                       context,
-                      QuizCurrent.routeName,
-                      arguments: QuizRouteArguments(quizzesFiltered[i],
-                          findUserById(quizzesFiltered[i].authorId)),
+                      QuizIntro.routeName,
+                      arguments: QuizRouteArguments(
+                          quizzesFiltered[i],
+                          findUserById(quizzesFiltered[i].authorId),
+                          findUserById(Provider.of<AWHUser>(context, listen: false).id)),
                     );
                   },
                 ),
@@ -180,7 +182,7 @@ class _QuizListState extends State<QuizList> {
         margin: EdgeInsets.only(top: 3, left: 7, right: 7, bottom: 5),
         decoration: BoxDecoration(
             color:
-            Theme.of(context).textTheme.headline6.color.withOpacity(0.5)),
+                Theme.of(context).textTheme.headline6.color.withOpacity(0.5)),
         height: 40,
         child: ElevatedButton(
           child: Row(
